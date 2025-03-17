@@ -18,9 +18,24 @@ func New(connStr string) (*Store, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if err = db.Ping(); err != nil {
 		return nil, err
 	}
+
+	_, err = db.Exec(`
+        CREATE TABLE IF NOT EXISTS posts (
+            id SERIAL PRIMARY KEY,
+            author_name TEXT NOT NULL,
+            title TEXT NOT NULL,
+            content TEXT NOT NULL,
+            created_at BIGINT NOT NULL
+        );
+    `)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Store{db: db}, nil
 }
 
